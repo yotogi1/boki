@@ -7,6 +7,13 @@
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
+  <nav class="global-menu" aria-label="常時メニュー">
+    <button class="menu-btn home" onclick="goHome()">🏠 トップ</button>
+    <button class="menu-btn" onclick="S.tab='lesson';render();scrollToTop()">講義</button>
+    <button class="menu-btn" onclick="S.tab='journal';render();scrollToTop()">仕訳</button>
+    <button class="menu-btn" onclick="S.tab='fs';render();scrollToTop()">第3問</button>
+    <button class="menu-btn" onclick="S.tab='weak';render();scrollToTop()">弱点</button>
+  </nav>
   <header>
     <h1>日商簿記3級トレーナー</h1>
     <p>講義 → 仕訳 → 決算整理 → 第3問 → 模試 → 弱点復習</p>
@@ -17,6 +24,7 @@
     <main id="app"></main>
   </div>
 
+  <button class="floating-home" onclick="goHome()" aria-label="トップページに戻る">🏠 トップへ</button>
   <script src="app.js"></script>
 </body>
 </html>

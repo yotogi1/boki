@@ -1,44 +1,35 @@
-# 日商簿記3級トレーナー v3 完全ファイル版
+# 日商簿記3級トレーナー v4
 
 ## 内容
 
-- `index.html`：画面本体
-- `styles.css`：デザイン
-- `app.js`：アプリ動作・問題データ・保存処理
-- `README.md`：この説明ファイル
+- index.html
+- styles.css
+- app.js
+- qr-boki.svg
+- README.md
 
-## 使い方
+## v4で追加したもの
 
-1. ZIPを解凍します。
-2. `boki3-app-v3-complete` フォルダの中身を、GitHub Pagesで公開する場所にアップロードします。
-3. `index.html`、`styles.css`、`app.js` を同じ階層に置いてください。
-4. ブラウザで `index.html` を開きます。
+- いつでもトップページに戻れる常時メニュー
+- 画面右下の「トップへ」固定ボタン
+- トップページに `https://yotogi1.github.io/boki/` へアクセスできるQRコードを表示
+- QRコード画像 `qr-boki.svg` を同梱
 
-## GitHub Pages配置例
+## GitHub Pagesへのアップロード
 
-`https://yotogi1.github.io/boki/` で表示したい場合、GitHub上の `boki` リポジトリまたは公開フォルダ直下を次の状態にします。
+GitHubの `boki` リポジトリ直下を以下の構成にしてください。
 
 ```text
 boki/
 ├─ index.html
 ├─ styles.css
 ├─ app.js
+├─ qr-boki.svg
 └─ README.md
 ```
 
-ZIPファイルそのものをアップロードするだけでは表示されません。必ず解凍後の中身をアップロードしてください。
+ZIPのままではなく、解凍して中身のファイルをアップロードしてください。
 
-## v3の機能
+## 表示URL
 
-- 講義カード
-- 分野別仕訳練習
-- 解答・解説表示
-- 弱点復習
-- 第3問ミニ問題
-- 30日ロードマップ
-- localStorageによる保存
-- スマホ縦画面対応
-
-## 注意
-
-このアプリの問題は、過去問そのものではなく、日商簿記3級の頻出論点を参考にしたオリジナル問題です。
+https://yotogi1.github.io/boki/

@@ -34,13 +34,20 @@ const fsMini=[
 {q:'支払家賃120,000円のうち翌期分20,000円が含まれている。当期の支払家賃はいくらか。',ans:'100000',e:'翌期分20,000円は前払家賃として除く。120,000−20,000＝100,000円。'}
 ];
 const S={tab:'home',cat:'全分野',i:0,stats:{ans:0,ok:0},wrong:JSON.parse(localStorage.bokiWrong||'[]'),done:JSON.parse(localStorage.bokiDone||'{}')};
+const SITE_URL='https://yotogi1.github.io/boki/';
 const tabs=[['home','ホーム'],['lesson','講義'],['journal','仕訳練習'],['fs','第3問ミニ'],['weak','弱点'],['road','30日計画']];
 function save(){localStorage.bokiWrong=JSON.stringify(S.wrong);localStorage.bokiDone=JSON.stringify(S.done)}
 function nav(){document.getElementById('tabs').innerHTML=tabs.map(t=>`<button class="tab ${S.tab==t[0]?'active':''}" onclick="S.tab='${t[0]}';render()">${t[1]}</button>`).join('')}
 function today(){const d=Math.min(30,Math.max(1,Number(localStorage.bokiDay||1)));return roadmap[d-1]}
 function setDay(v){localStorage.bokiDay=v;render()}
 function render(){nav();const app=document.getElementById('app');if(S.tab==='home')home(app);if(S.tab==='lesson')lesson(app);if(S.tab==='journal')journal(app);if(S.tab==='fs')fs(app);if(S.tab==='weak')weak(app);if(S.tab==='road')road(app)}
-function home(app){const t=today();const rate=S.stats.ans?Math.round(S.stats.ok/S.stats.ans*100):0;app.innerHTML=`<section class="card"><h2>今日のタスク：Day ${t.d}</h2><p>${t.task}</p><div class="bar"><span style="width:${Math.min(100,t.d/30*100)}%"></span></div><p class="muted">30日計画の進捗 ${t.d}/30</p><div class="row"><button class="btn" onclick="S.tab='journal';render()">仕訳を解く</button><button class="btn sub" onclick="S.tab='lesson';render()">講義を見る</button><button class="btn sub" onclick="S.tab='fs';render()">第3問ミニ</button></div></section><section class="card"><h2>成績</h2><div class="grid"><div class="mini">回答数<br><b>${S.stats.ans}</b></div><div class="mini">正解数<br><b>${S.stats.ok}</b></div><div class="mini">正答率<br><b>${rate}%</b></div><div class="mini">弱点数<br><b>${S.wrong.length}</b></div></div><button class="btn bad" onclick="resetAll()">進捗を初期化</button></section>`}
+function home(app){const t=today();const rate=S.stats.ans?Math.round(S.stats.ok/S.stats.ans*100):0;app.innerHTML=`<div class="home-hero"><section class="card"><h2>今日のタスク：Day ${t.d}</h2><p>${t.task}</p><div class="bar"><span style="width:${Math.min(100,t.d/30*100)}%"></span></div><p class="muted">30日計画の進捗 ${t.d}/30</p><div class="row"><button class="btn" onclick="S.tab='journal';function scrollToTop(){window.scrollTo({top:0,behavior:'smooth'})}
+function goHome(){S.tab='home';render();scrollToTop()}
+render();scrollToTop()">仕訳を解く</button><button class="btn sub" onclick="S.tab='lesson';function scrollToTop(){window.scrollTo({top:0,behavior:'smooth'})}
+function goHome(){S.tab='home';render();scrollToTop()}
+render();scrollToTop()">講義を見る</button><button class="btn sub" onclick="S.tab='fs';function scrollToTop(){window.scrollTo({top:0,behavior:'smooth'})}
+function goHome(){S.tab='home';render();scrollToTop()}
+render();scrollToTop()">第3問ミニ</button></div></section><section class="card qr-card"><h2>共有用QRコード</h2><p class="muted">スマホで読み取るとトップページを開けます。</p><a href="${SITE_URL}"><img class="qr-img" src="qr-boki.svg" alt="簿記3級アプリのQRコード"></a><p><span class="url-box">${SITE_URL}</span></p></section></div><section class="card"><h2>成績</h2><div class="grid"><div class="mini">回答数<br><b>${S.stats.ans}</b></div><div class="mini">正解数<br><b>${S.stats.ok}</b></div><div class="mini">正答率<br><b>${rate}%</b></div><div class="mini">弱点数<br><b>${S.wrong.length}</b></div></div><button class="btn bad" onclick="resetAll()">進捗を初期化</button></section>`}
 function lesson(app){app.innerHTML=`<section class="card"><h2>講義</h2><div class="grid">${lessons.map(x=>`<div class="mini"><span class="pill">重要</span><h3>${x.t}</h3><p>${x.b}</p></div>`).join('')}</div></section>`}
 function curQs(){return S.cat==='全分野'?qs:qs.filter(x=>x.c===S.cat)}
 function journal(app){const cats=['全分野',...new Set(qs.map(x=>x.c))];const arr=curQs();if(S.i>=arr.length)S.i=0;const q=arr[S.i];app.innerHTML=`<section class="card"><h2>仕訳練習</h2><select class="select" onchange="S.cat=this.value;S.i=0;render()">${cats.map(c=>`<option ${S.cat===c?'selected':''}>${c}</option>`).join('')}</select><p class="muted">${S.i+1}/${arr.length}　<span class="pill">${q.c}</span></p><div class="qbox"><b>問題</b><p>${q.q}</p></div><h3>仕訳入力</h3><div id="entry"></div><div class="row"><button class="btn" onclick="checkJournal()">答え合わせ</button><button class="btn sub" onclick="nextQ()">次へ</button></div><div id="result"></div></section>`;drawEntry(q.a.length)}
@@ -54,4 +61,6 @@ function checkFs(i){const x=fsMini[i];const v=norm(document.getElementById('fs'+
 function weak(app){app.innerHTML=`<section class="card"><h2>弱点復習</h2>${S.wrong.length?S.wrong.map((w,i)=>`<div class="mini"><span class="pill">${w.c}</span><p>${w.q}</p><p class="muted">${w.e}</p><button class="btn sub" onclick="S.wrong.splice(${i},1);save();render()">克服したので削除</button></div>`).join(''):'<p>まだ弱点はありません。まず仕訳練習を解いてください。</p>'}</section>`}
 function road(app){app.innerHTML=`<section class="card"><h2>30日ロードマップ</h2><p>現在Day <input style="width:90px" type="number" min="1" max="30" value="${today().d}" onchange="setDay(this.value)"></p><div class="grid">${roadmap.map(r=>`<div class="mini"><b>Day ${r.d}</b><p>${r.task}</p></div>`).join('')}</div></section>`}
 function resetAll(){if(confirm('進捗と弱点を削除しますか？')){localStorage.removeItem('bokiWrong');localStorage.removeItem('bokiDone');localStorage.removeItem('bokiDay');S.wrong=[];S.done={};S.stats={ans:0,ok:0};render()}}
+function scrollToTop(){window.scrollTo({top:0,behavior:'smooth'})}
+function goHome(){S.tab='home';render();scrollToTop()}
 render();
